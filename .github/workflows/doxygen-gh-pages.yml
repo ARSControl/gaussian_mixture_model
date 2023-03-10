@@ -13,4 +13,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           folder: html
+          branch: master
           config_file: sample.conf
