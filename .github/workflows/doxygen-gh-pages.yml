@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: DenverCoder1/doxygen-github-pages-action@v1.2.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: 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
           branch: gh-pages
           folder: html
           config_file: sample.conf
