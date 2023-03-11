@@ -22,10 +22,11 @@ public:
     // initialize GMM with 5 random components
     GMM_Test(): gmm(4)
     {
+        std::cout << "Constructor called" << std::endl;
         timer = n.createTimer(ros::Duration(1.0), &GMM_Test::timerCallback,this);
 
         samples.resize(2,200);
-        double dev = 0.2;
+        double dev = 2.0;
         std::default_random_engine gen;
 
         // Set desired values
@@ -35,7 +36,7 @@ public:
         std::normal_distribution<double> dist_x(p1(0), dev);
         std::normal_distribution<double> dist_y(p1(1), dev);
 
-        for(int i = 0; i < 20; i++)
+        for(int i = 0; i < 50; i++)
         {
             samples(0,i) = dist_x(gen);
             samples(1,i) = dist_y(gen);
@@ -53,6 +54,7 @@ public:
             samples(0,i) = dist_x2(gen);
             samples(1,i) = dist_y2(gen);
         }
+
 
         // Set desired values
         Eigen::VectorXd p3(2);
@@ -80,9 +82,11 @@ public:
             samples(1,i) = dist_y4(gen);
         }
 
-        gmm.fitgmm(samples, 4, 1000, 1e-3, false);
+        gmm.fitgmm(samples, 4, 1000, 1e-3, true);
 
         mean_points = gmm.getMeans();
+        covariances = gmm.getCovariances();
+        weights = gmm.getWeights();
 
         std::cout << "GMM Initialized" << std::endl;
 
@@ -95,6 +99,19 @@ public:
         {
             std::cout << mean_points[i].transpose() << std::endl;
         } 
+
+        std::cout << "Covariance matrices:\n";
+        for (int i = 0; i < covariances.size(); i++)
+        {
+            std::cout << covariances[i].transpose() << std::endl;
+        }
+
+        std::cout << "Mixture proportion: ";
+        for (int i = 0; i < weights.size(); i++)
+        {
+            std::cout << weights[i];
+        }
+        std::cout << std::endl;
     }
 
     

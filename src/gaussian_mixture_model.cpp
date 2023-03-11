@@ -51,14 +51,20 @@ GaussianMixtureModel::GaussianMixtureModel(int num_components)
     for (int i = 0; i < k_; i++)
     {   
         // Assign equal weight to each component
-        w_[i] = 1.0 / k_;
+        w_.push_back(1.0 / k_);
 
-        mu_[i](0) = dist_x(gen);
-        mu_[i](1) = dist_y(gen);
+        Eigen::VectorXd q(2);
+        q << dist_x(gen), dist_y(gen);
+        // mu_[i](0) = dist_x(gen);
+        // mu_[i](1) = dist_y(gen);
+
+        mu_.push_back(q);
 
         Eigen::MatrixXd cov(2,2);
-        cov << dev, dev, dev, dev;
-        sigma_[i] = cov;
+        cov << dev, dev/5.0,
+             dev/5.0, dev;
+        sigma_.push_back(cov);
+
     }
 }
 
@@ -99,6 +105,7 @@ double GaussianMixtureModel::gauss_pdf_2d(Eigen::VectorXd q, Eigen::VectorXd mea
     double det = cov.determinant();
     double inv_sqrt_det = 1.0 / sqrt(det);
     Eigen::VectorXd q_m = q - mean;
+
     
     double exponent = -0.5 * q_m.transpose() * cov.inverse() * q_m;
     double coeff = inv_sqrt_det / (2.0 * M_PI);
@@ -119,9 +126,16 @@ void GaussianMixtureModel::fitgmm(Eigen::MatrixXd samples, int num_components, i
     k_ = num_components;
     int n_samples = samples.cols();
 
+    if (verbose)
+    {
+        std::cout << "Number of samples: " << n_samples << std::endl;
+        std::cout << "Number of components: " << k_ << std::endl;
+        std::cout << "Dimension of samples: " << dim_ << std::endl;
+    }
+
     // Initialize new GMM parameters
     // std::vector<double> gamma(n_sampels * k_);               // responsibilities
-    Eigen::MatrixXd gamma(n_samples, k_);               // responsibilities
+    std::vector<double> gamma(n_samples * k_);               // responsibilities
     double log_likelihood_old = -std::numeric_limits<double>::infinity();
     double log_likelihood_new = 0.0;
     int it = 0;                                // iteration counter
@@ -134,19 +148,19 @@ void GaussianMixtureModel::fitgmm(Eigen::MatrixXd samples, int num_components, i
         for (int i = 0; i < n_samples; i++)
         {
             double sum = 0.0;
-            for (int j = 0; i < k_; j++)
+            for (int j = 0; j < k_; j++)
             {
                 double prob = w_[j] * gauss_pdf_2d(samples.col(i).head(2), mu_[j], sigma_[j]);
                 sum += prob;
-                gamma(i,j) = prob;
+                gamma[i * k_ + j] = prob;
             }
 
-            // for (int j = 0; j < k_; j++)
-            // {
-            //     gamma(i,j) /= sum;
-            // }
+            for (int j = 0; j < k_; j++)
+            {
+                gamma[i * k_ + j] /= sum;
+            }
 
-            gamma.row(i) /= sum;
+            // gamma.row(i) /= sum;
         }
 
         // M-step: update parameters
@@ -161,12 +175,12 @@ void GaussianMixtureModel::fitgmm(Eigen::MatrixXd samples, int num_components, i
 
             for (int i = 0; i < n_samples; i++)
             {
-                sum_gamma += gamma(i,j);
-                sum_x1 += gamma(i,j) * samples(0,i);
-                sum_x2 += gamma(i,j) * samples(1,i);
-                sum_x1_squared += gamma(i,j) * pow(samples(0,i), 2);
-                sum_x2_squared += gamma(i,j) * pow(samples(1,i), 2);
-                sum_x1_x2 += gamma(i,j) * samples(0,i) * samples(1,i);
+                sum_gamma += gamma[i * k_ + j];
+                sum_x1 += gamma[i * k_ + j] * samples(0,i);
+                sum_x2 += gamma[i * k_ + j] * samples(1,i);
+                sum_x1_squared += gamma[i * k_ + j] * pow(samples(0,i), 2);
+                sum_x2_squared += gamma[i * k_ + j] * pow(samples(1,i), 2);
+                sum_x1_x2 += gamma[i * k_ + j] * samples(0,i) * samples(1,i);
             }
 
             w_[j] = sum_gamma / n_samples;

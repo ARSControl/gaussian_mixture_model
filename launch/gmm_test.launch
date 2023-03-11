@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    
+  <node name="gmm_test_node" pkg="gaussian_mixture_model" type="gmm_node" output="screen" />
+   
+</launch>
