@@ -53,6 +53,17 @@ class GaussianMixtureModel
          * @param[in] verbose print number of iterations, final log_likelihood and time required for computation (default: false)
          */
         void fitgmm(Eigen::MatrixXd samples, int num_components, int max_iterations, double tolerance, bool verbose);                     // expectation maximization algorithm
+
+        /** @brief Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step.
+         * Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached.
+         * The GMM must be already initialized.
+         * @param[in] samples vector of samples. Each element of the std::vector contains coordinates of a sample.
+         * @param[in] num_components number of clusters
+         * @param[in] max_iterations maximum number of iterations (default: 1000)
+         * @param[in] tolerance convergence threshold (default: 1e-3)
+         * @param[in] verbose print number of iterations, final log_likelihood and time required for computation (default: false)
+         */
+        void fitgmm(std::vector<Eigen::VectorXd> samples, int num_components, int max_iterations, double tolerance, bool verbose);                     // expectation maximization algorithm
         
         /** @brief Mean getter
          * @param[out] means vector of mean points, one for each cluster

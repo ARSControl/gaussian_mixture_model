@@ -42,7 +42,7 @@ GaussianMixtureModel::GaussianMixtureModel(int num_components)
     log_likelihood_ = std::numeric_limits<double>::infinity();
 
     // Generate random inputs
-    double dev = 5.0;
+    double dev = 10.0;
     std::normal_distribution<double> dist_x(0.0, dev);
     std::normal_distribution<double> dist_y(0.0, dev);
     std::normal_distribution<double> dist_theta(0.0, dev);
@@ -66,6 +66,7 @@ GaussianMixtureModel::GaussianMixtureModel(int num_components)
         sigma_.push_back(cov);
 
     }
+
 }
 
 
@@ -224,6 +225,22 @@ void GaussianMixtureModel::fitgmm(Eigen::MatrixXd samples, int num_components, i
         std::cout << "Log likelihood: " << log_likelihood_new << std::endl;
         std::cout<<"Computation time for EM: -------------: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - timerstart).count()<<" ms :-------------\n";
     }
+}
+
+
+void GaussianMixtureModel::fitgmm(std::vector<Eigen::VectorXd> samples, int num_components, int max_iterations = 1000, double tolerance = 1e-3, bool verbose = false)
+{
+    // Rework samples to Eigen::MatrixXd
+    int n_samples = samples.size();
+    int dim = samples[0].size();
+    Eigen::MatrixXd samples_eigen(dim, n_samples);
+    for (int i = 0; i < n_samples; i++)
+    {
+        samples_eigen.col(i) = samples[i];
+    }
+
+    // Fit GMM
+    fitgmm(samples_eigen, num_components, max_iterations, tolerance, verbose);
 }
 
 
