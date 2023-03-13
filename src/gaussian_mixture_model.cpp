@@ -136,11 +136,12 @@ void GaussianMixtureModel::fitgmm(Eigen::MatrixXd samples, int num_components, i
     // Initialize new GMM parameters
     // std::vector<double> gamma(n_sampels * k_);               // responsibilities
     std::vector<double> gamma(n_samples * k_);               // responsibilities
-    double log_likelihood_old = -std::numeric_limits<double>::infinity();
+    // double log_likelihood_old = -std::numeric_limits<double>::infinity();
+    double log_likelihood_old = -1.0;
     double log_likelihood_new = 0.0;
     int it = 0;                                // iteration counter
 
-    while (it < max_iterations && (log_likelihood_new-log_likelihood_old) > tolerance)
+    while (it < max_iterations && abs(log_likelihood_new-log_likelihood_old) > tolerance)
     {
         log_likelihood_old = log_likelihood_new;
 
@@ -205,6 +206,13 @@ void GaussianMixtureModel::fitgmm(Eigen::MatrixXd samples, int num_components, i
         }
 
         it++;
+
+        if (verbose)
+        {
+            std::cout << "Iteration: " << it << std::endl;
+            std::cout << "Actual Log likelihood: " << log_likelihood_new << std::endl;
+            std::cout << "Difference new vs old log-likelihood: " << log_likelihood_new - log_likelihood_old << std::endl;
+        }
     }
 
     log_likelihood_ = log_likelihood_new;
@@ -212,6 +220,7 @@ void GaussianMixtureModel::fitgmm(Eigen::MatrixXd samples, int num_components, i
 
     if (verbose)
     {   
+        std::cout << "Total number of iterations: " << it << std::endl;
         std::cout << "Log likelihood: " << log_likelihood_new << std::endl;
         std::cout<<"Computation time for EM: -------------: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - timerstart).count()<<" ms :-------------\n";
     }

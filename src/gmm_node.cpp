@@ -26,7 +26,7 @@ public:
         timer = n.createTimer(ros::Duration(1.0), &GMM_Test::timerCallback,this);
 
         samples.resize(2,200);
-        double dev = 2.0;
+        double dev = 0.5;
         std::default_random_engine gen;
 
         // Set desired values
@@ -44,7 +44,7 @@ public:
 
         // Set desired values
         Eigen::VectorXd p2(2);
-        p1 << -4.0, 4.0;
+        p2 << -4.0, 4.0;
         // Generate samples
         std::normal_distribution<double> dist_x2(p2(0), dev);
         std::normal_distribution<double> dist_y2(p2(1), dev);
@@ -58,7 +58,7 @@ public:
 
         // Set desired values
         Eigen::VectorXd p3(2);
-        p1 << 4.0, 6.0;
+        p3 << 4.0, 6.0;
         // Generate samples
         std::normal_distribution<double> dist_x3(p3(0), dev);
         std::normal_distribution<double> dist_y3(p3(1), dev);
@@ -71,7 +71,7 @@ public:
 
         // Set desired values
         Eigen::VectorXd p4(2);
-        p1 << 4.0, -6.0;
+        p4 << 4.0, -6.0;
         // Generate samples
         std::normal_distribution<double> dist_x4(p4(0), dev);
         std::normal_distribution<double> dist_y4(p4(1), dev);
@@ -82,7 +82,10 @@ public:
             samples(1,i) = dist_y4(gen);
         }
 
-        gmm.fitgmm(samples, 4, 1000, 1e-3, true);
+        auto timerstart = std::chrono::high_resolution_clock::now();
+        gmm.fitgmm(samples, 4, 1000, 1e-3, false);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::cout<<"Computation time for EM: -------------: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - timerstart).count()<<" ms :-------------\n";
 
         mean_points = gmm.getMeans();
         covariances = gmm.getCovariances();
@@ -94,6 +97,11 @@ public:
 
     void timerCallback(const ros::TimerEvent&)
     {
+        auto timerstart = std::chrono::high_resolution_clock::now();
+        gmm.fitgmm(samples, 4, 1000, 1e-3, false);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::cout<<"Computation time for EM: -------------: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - timerstart).count()<<" ms :-------------\n";
+
         std::cout << "Mean points: \n";
         for (int i = 0; i < mean_points.size(); i++)
         {
