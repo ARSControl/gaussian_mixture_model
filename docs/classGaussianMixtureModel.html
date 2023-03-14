@@ -91,11 +91,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab506ebedd1079fc7d66b639529bf21a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#ab506ebedd1079fc7d66b639529bf21a2">fitgmm</a> (Eigen::MatrixXd samples, int num_components, int max_iterations, double tolerance, bool verbose)</td></tr>
 <tr class="memdesc:ab506ebedd1079fc7d66b639529bf21a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step. Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached. The GMM must be already initialized.  <a href="classGaussianMixtureModel.html#ab506ebedd1079fc7d66b639529bf21a2">More...</a><br /></td></tr>
 <tr class="separator:ab506ebedd1079fc7d66b639529bf21a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a915aa95f34865b50f5231d805084e45f"><td class="memItemLeft" align="right" valign="top"><a id="a915aa95f34865b50f5231d805084e45f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>fitgmm2</b> (Eigen::MatrixXd samples, int num_components, int max_iterations, double tolerance, bool verbose)</td></tr>
+<tr class="memitem:a915aa95f34865b50f5231d805084e45f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a915aa95f34865b50f5231d805084e45f">fitgmm2</a> (Eigen::MatrixXd samples, int num_components, int max_iterations, double tolerance, bool verbose)</td></tr>
+<tr class="memdesc:a915aa95f34865b50f5231d805084e45f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step. Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached. The GMM must be already initialized.  <a href="classGaussianMixtureModel.html#a915aa95f34865b50f5231d805084e45f">More...</a><br /></td></tr>
 <tr class="separator:a915aa95f34865b50f5231d805084e45f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86d98111504ed2e6f6afdefca5c933a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a86d98111504ed2e6f6afdefca5c933a3">fitgmm</a> (std::vector&lt; Eigen::VectorXd &gt; samples, int num_components, int max_iterations, double tolerance, bool verbose)</td></tr>
-<tr class="memdesc:a86d98111504ed2e6f6afdefca5c933a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step. Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached. The GMM must be already initialized.  <a href="classGaussianMixtureModel.html#a86d98111504ed2e6f6afdefca5c933a3">More...</a><br /></td></tr>
+<tr class="memdesc:a86d98111504ed2e6f6afdefca5c933a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step. Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached. The GMM must be already initialized. Result is the same as above, but convergence should be faster.  <a href="classGaussianMixtureModel.html#a86d98111504ed2e6f6afdefca5c933a3">More...</a><br /></td></tr>
 <tr class="separator:a86d98111504ed2e6f6afdefca5c933a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89cf94b880867f6848666ca837e2bea2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::VectorXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a89cf94b880867f6848666ca837e2bea2">getMeans</a> ()</td></tr>
 <tr class="memdesc:a89cf94b880867f6848666ca837e2bea2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mean getter.  <a href="classGaussianMixtureModel.html#a89cf94b880867f6848666ca837e2bea2">More...</a><br /></td></tr>
@@ -362,10 +362,68 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>fitgmm2</b> (Eigen::M
       </table>
 </div><div class="memdoc">
 
-<p>Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step. Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached. The GMM must be already initialized. </p>
+<p>Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step. Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached. The GMM must be already initialized. Result is the same as above, but convergence should be faster. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">samples</td><td>vector of samples. Each element of the std::vector contains coordinates of a sample. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_components</td><td>number of clusters </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">max_iterations</td><td>maximum number of iterations (default: 1000) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tolerance</td><td>convergence threshold (default: 1e-3) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">verbose</td><td>print number of iterations, final log_likelihood and time required for computation (default: false) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a915aa95f34865b50f5231d805084e45f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a915aa95f34865b50f5231d805084e45f">&#9670;&nbsp;</a></span>fitgmm2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianMixtureModel::fitgmm2 </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::MatrixXd&#160;</td>
+          <td class="paramname"><em>samples</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_components</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>max_iterations</em> = <code>1000</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>tolerance</em> = <code>1e-3</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>verbose</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step. Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached. The GMM must be already initialized. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">samples</td><td>matrix of data samples. Each column is a sample. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">num_components</td><td>number of clusters </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">max_iterations</td><td>maximum number of iterations (default: 1000) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">tolerance</td><td>convergence threshold (default: 1e-3) </td></tr>

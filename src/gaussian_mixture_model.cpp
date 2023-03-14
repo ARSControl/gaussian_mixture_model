@@ -108,6 +108,7 @@ double GaussianMixtureModel::getLogLikelihood()
 void GaussianMixtureModel::setMeans(std::vector<Eigen::VectorXd> means)
 {
     mu_ = means;
+    k_ = means.size();
 }
 
 void GaussianMixtureModel::setCovariances(std::vector<Eigen::MatrixXd> covariances)
@@ -343,20 +344,6 @@ void GaussianMixtureModel::fitgmm2(Eigen::MatrixXd samples, int num_components, 
             sigma_[j](1,1) = sum_x_squared(1) / sum_gamma - pow(mu_[j](1), 2);
             sigma_[j](0,1) = sum_x1_x2 / sum_gamma - mu_[j](0) * mu_[j](1);
             sigma_[j](1,0) = sigma_[j](0,1);
-
-            // Eigen::MatrixXd diff = samples.colwise() - mu_[j];
-            // Eigen::VectorXd diff_0 = diff.row(0).array() * gamma.col(j).array();
-            // Eigen::VectorXd diff_1 = diff.row(1).array() * gamma.col(j).array();
-
-            // sigma_[j](0,0) = diff_0.matrix().transpose() * diff.row(0).matrix() / sum_gamma;
-            // sigma_[j](1,1) = diff_1.matrix().transpose() * diff.row(1).matrix() / sum_gamma;
-            // sigma_[j](0,1) = diff_0.matrix().transpose() * diff.row(1).matrix() / sum_gamma;
-            // sigma_[j](1,0) = sigma_[j](0,1);
-
-            // Eigen::MatrixXd diff = samples - mu_[j].replicate(1, n_samples);
-            // sigma_[j] = diff.array().rowwise() * gamma.col(j).transpose().array();
-            // sigma_[j] *= diff.array().rowwise() * gamma.col(j).transpose().array();
-            // sigma_[j] = sigma_[j].rowwise().sum() / sum_gamma;
         }
 
         if(verbose) {std::cout << "M-step completed. Computing log-likelihood..." << std::endl;}
@@ -407,7 +394,7 @@ void GaussianMixtureModel::fitgmm(std::vector<Eigen::VectorXd> samples, int num_
     }
 
     // Fit GMM
-    fitgmm(samples_eigen, num_components, max_iterations, tolerance, verbose);
+    fitgmm2(samples_eigen, num_components, max_iterations, tolerance, verbose);
 }
 
 
