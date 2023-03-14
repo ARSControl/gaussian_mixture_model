@@ -78,8 +78,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae2b700e202c29f85811cb9dff268bf82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use this method to initialize a GMM starting from mean points and covariance matrices already known. Faster than fitting a GMM from a dataset. The number of component is equal to the number of elements in the input vectors.  <a href="classGaussianMixtureModel.html#ae2b700e202c29f85811cb9dff268bf82">More...</a><br /></td></tr>
 <tr class="separator:ae2b700e202c29f85811cb9dff268bf82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c2fcb4ba9188d461b78d4ca97ac6ed3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a4c2fcb4ba9188d461b78d4ca97ac6ed3">GaussianMixtureModel</a> (int num_components)</td></tr>
-<tr class="memdesc:a4c2fcb4ba9188d461b78d4ca97ac6ed3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use this method to initialize a GMM from random mean points and covariance matrices.  <a href="classGaussianMixtureModel.html#a4c2fcb4ba9188d461b78d4ca97ac6ed3">More...</a><br /></td></tr>
+<tr class="memdesc:a4c2fcb4ba9188d461b78d4ca97ac6ed3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use this method to initialize a GMM from random mean points and covariance matrices. DEPRECATED! The fitting procedure is very slow. It's better to initialize an empty GMM and then set the parameters with the setter methods.  <a href="classGaussianMixtureModel.html#a4c2fcb4ba9188d461b78d4ca97ac6ed3">More...</a><br /></td></tr>
 <tr class="separator:a4c2fcb4ba9188d461b78d4ca97ac6ed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b82fa82e365b6738d7ab0a4db83c5eb"><td class="memItemLeft" align="right" valign="top"><a id="a8b82fa82e365b6738d7ab0a4db83c5eb"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a8b82fa82e365b6738d7ab0a4db83c5eb">GaussianMixtureModel</a> ()</td></tr>
+<tr class="memdesc:a8b82fa82e365b6738d7ab0a4db83c5eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use this method to initialize an empty GMM. Parameters must be set with the setter methods. <br /></td></tr>
+<tr class="separator:a8b82fa82e365b6738d7ab0a4db83c5eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88a23f642107c14eb4a9bd2c012dd78b"><td class="memItemLeft" align="right" valign="top"><a id="a88a23f642107c14eb4a9bd2c012dd78b"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a88a23f642107c14eb4a9bd2c012dd78b">~GaussianMixtureModel</a> ()</td></tr>
 <tr class="memdesc:a88a23f642107c14eb4a9bd2c012dd78b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
@@ -87,6 +91,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab506ebedd1079fc7d66b639529bf21a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#ab506ebedd1079fc7d66b639529bf21a2">fitgmm</a> (Eigen::MatrixXd samples, int num_components, int max_iterations, double tolerance, bool verbose)</td></tr>
 <tr class="memdesc:ab506ebedd1079fc7d66b639529bf21a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step. Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached. The GMM must be already initialized.  <a href="classGaussianMixtureModel.html#ab506ebedd1079fc7d66b639529bf21a2">More...</a><br /></td></tr>
 <tr class="separator:ab506ebedd1079fc7d66b639529bf21a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a915aa95f34865b50f5231d805084e45f"><td class="memItemLeft" align="right" valign="top"><a id="a915aa95f34865b50f5231d805084e45f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>fitgmm2</b> (Eigen::MatrixXd samples, int num_components, int max_iterations, double tolerance, bool verbose)</td></tr>
+<tr class="separator:a915aa95f34865b50f5231d805084e45f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86d98111504ed2e6f6afdefca5c933a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a86d98111504ed2e6f6afdefca5c933a3">fitgmm</a> (std::vector&lt; Eigen::VectorXd &gt; samples, int num_components, int max_iterations, double tolerance, bool verbose)</td></tr>
+<tr class="memdesc:a86d98111504ed2e6f6afdefca5c933a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step. Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached. The GMM must be already initialized.  <a href="classGaussianMixtureModel.html#a86d98111504ed2e6f6afdefca5c933a3">More...</a><br /></td></tr>
+<tr class="separator:a86d98111504ed2e6f6afdefca5c933a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89cf94b880867f6848666ca837e2bea2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::VectorXd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a89cf94b880867f6848666ca837e2bea2">getMeans</a> ()</td></tr>
 <tr class="memdesc:a89cf94b880867f6848666ca837e2bea2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mean getter.  <a href="classGaussianMixtureModel.html#a89cf94b880867f6848666ca837e2bea2">More...</a><br /></td></tr>
 <tr class="separator:a89cf94b880867f6848666ca837e2bea2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -99,6 +109,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a370e0bd4e5f8f0236bafcf083abb944c"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a370e0bd4e5f8f0236bafcf083abb944c">getLogLikelihood</a> ()</td></tr>
 <tr class="memdesc:a370e0bd4e5f8f0236bafcf083abb944c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log-likelihood getter.  <a href="classGaussianMixtureModel.html#a370e0bd4e5f8f0236bafcf083abb944c">More...</a><br /></td></tr>
 <tr class="separator:a370e0bd4e5f8f0236bafcf083abb944c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedd3d127228bd114b00668411e6c671a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#aedd3d127228bd114b00668411e6c671a">setMeans</a> (std::vector&lt; Eigen::VectorXd &gt; means)</td></tr>
+<tr class="memdesc:aedd3d127228bd114b00668411e6c671a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mean points setter method.  <a href="classGaussianMixtureModel.html#aedd3d127228bd114b00668411e6c671a">More...</a><br /></td></tr>
+<tr class="separator:aedd3d127228bd114b00668411e6c671a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04e92da24639e4b5c8b58fe177a65680"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a04e92da24639e4b5c8b58fe177a65680">setCovariances</a> (std::vector&lt; Eigen::MatrixXd &gt; covariances)</td></tr>
+<tr class="memdesc:a04e92da24639e4b5c8b58fe177a65680"><td class="mdescLeft">&#160;</td><td class="mdescRight">Covariance matrices setter method.  <a href="classGaussianMixtureModel.html#a04e92da24639e4b5c8b58fe177a65680">More...</a><br /></td></tr>
+<tr class="separator:a04e92da24639e4b5c8b58fe177a65680"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af45f0d055aa18c052da276d91955d3b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#af45f0d055aa18c052da276d91955d3b0">setWeights</a> (std::vector&lt; double &gt; weights)</td></tr>
+<tr class="memdesc:af45f0d055aa18c052da276d91955d3b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Weights setter method.  <a href="classGaussianMixtureModel.html#af45f0d055aa18c052da276d91955d3b0">More...</a><br /></td></tr>
+<tr class="separator:af45f0d055aa18c052da276d91955d3b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84239d847cdb9164fd78b2f0ee2d74c3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#a84239d847cdb9164fd78b2f0ee2d74c3">check</a> ()</td></tr>
+<tr class="memdesc:a84239d847cdb9164fd78b2f0ee2d74c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check dimensions consistency of the GMM parameters.  <a href="classGaussianMixtureModel.html#a84239d847cdb9164fd78b2f0ee2d74c3">More...</a><br /></td></tr>
+<tr class="separator:a84239d847cdb9164fd78b2f0ee2d74c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9c8cc45f9b4ae9cf5589a6cb7dc5e71"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGaussianMixtureModel.html#ac9c8cc45f9b4ae9cf5589a6cb7dc5e71">gauss_pdf_2d</a> (Eigen::VectorXd q, Eigen::VectorXd mean, Eigen::MatrixXd cov)</td></tr>
 <tr class="memdesc:ac9c8cc45f9b4ae9cf5589a6cb7dc5e71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use this method to calculate the probability of a given 2D point from a Bivariate Gaussian Distribution (single component).  <a href="classGaussianMixtureModel.html#ac9c8cc45f9b4ae9cf5589a6cb7dc5e71">More...</a><br /></td></tr>
 <tr class="separator:ac9c8cc45f9b4ae9cf5589a6cb7dc5e71"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -207,7 +229,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Use this method to initialize a GMM from random mean points and covariance matrices. </p>
+<p>Use this method to initialize a GMM from random mean points and covariance matrices. DEPRECATED! The fitting procedure is very slow. It's better to initialize an empty GMM and then set the parameters with the setter methods. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">num_components</td><td>number of clusters </td></tr>
@@ -218,8 +240,28 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a84239d847cdb9164fd78b2f0ee2d74c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84239d847cdb9164fd78b2f0ee2d74c3">&#9670;&nbsp;</a></span>check()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GaussianMixtureModel::check </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check dimensions consistency of the GMM parameters. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if dimensions are consistent, false otherwise </dd></dl>
+
+</div>
+</div>
 <a id="ab506ebedd1079fc7d66b639529bf21a2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab506ebedd1079fc7d66b639529bf21a2">&#9670;&nbsp;</a></span>fitgmm()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab506ebedd1079fc7d66b639529bf21a2">&#9670;&nbsp;</a></span>fitgmm() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -266,6 +308,64 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">samples</td><td>matrix of data samples. Each column is a sample. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">num_components</td><td>number of clusters </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">max_iterations</td><td>maximum number of iterations (default: 1000) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tolerance</td><td>convergence threshold (default: 1e-3) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">verbose</td><td>print number of iterations, final log_likelihood and time required for computation (default: false) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a86d98111504ed2e6f6afdefca5c933a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86d98111504ed2e6f6afdefca5c933a3">&#9670;&nbsp;</a></span>fitgmm() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianMixtureModel::fitgmm </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; Eigen::VectorXd &gt;&#160;</td>
+          <td class="paramname"><em>samples</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_components</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>max_iterations</em> = <code>1000</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>tolerance</em> = <code>1e-3</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>verbose</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step. Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached. The GMM must be already initialized. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">samples</td><td>vector of samples. Each element of the std::vector contains coordinates of a sample. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">num_components</td><td>number of clusters </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">max_iterations</td><td>maximum number of iterations (default: 1000) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">tolerance</td><td>convergence threshold (default: 1e-3) </td></tr>
@@ -336,12 +436,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Covariances getter. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">covariances</td><td>vector of covariance matrices, one for each cluster </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>covariances vector of covariance matrices, one for each cluster </dd></dl>
 
 </div>
 </div>
@@ -361,12 +456,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Log-likelihood getter. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">logLikelihood</td><td>log-likelihood value of the data </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>logLikelihood log-likelihood value of the data </dd></dl>
 
 </div>
 </div>
@@ -386,12 +476,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Mean getter. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">means</td><td>vector of mean points, one for each cluster </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd>means vector of mean points, one for each cluster </dd></dl>
 
 </div>
 </div>
@@ -411,9 +496,82 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Weights getter. </p>
+<dl class="section return"><dt>Returns</dt><dd>weights vector of weights, one for each cluster </dd></dl>
+
+</div>
+</div>
+<a id="a04e92da24639e4b5c8b58fe177a65680"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04e92da24639e4b5c8b58fe177a65680">&#9670;&nbsp;</a></span>setCovariances()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianMixtureModel::setCovariances </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; Eigen::MatrixXd &gt;&#160;</td>
+          <td class="paramname"><em>covariances</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Covariance matrices setter method. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">weights</td><td>vector of weights, one for each cluster </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">covariances</td><td>vector of covariance matrices of each Gaussian component </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aedd3d127228bd114b00668411e6c671a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedd3d127228bd114b00668411e6c671a">&#9670;&nbsp;</a></span>setMeans()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianMixtureModel::setMeans </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; Eigen::VectorXd &gt;&#160;</td>
+          <td class="paramname"><em>means</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Mean points setter method. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">means</td><td>vector of mean points of each Gaussian component </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af45f0d055aa18c052da276d91955d3b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af45f0d055aa18c052da276d91955d3b0">&#9670;&nbsp;</a></span>setWeights()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GaussianMixtureModel::setWeights </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; double &gt;&#160;</td>
+          <td class="paramname"><em>weights</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Weights setter method. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">weights</td><td>vector of weights of each Gaussian component </td></tr>
   </table>
   </dd>
 </dl>
