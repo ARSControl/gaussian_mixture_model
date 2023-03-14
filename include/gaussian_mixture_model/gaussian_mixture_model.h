@@ -35,9 +35,14 @@ class GaussianMixtureModel
         GaussianMixtureModel(std::vector<Eigen::VectorXd> means, std::vector<Eigen::MatrixXd> covariances, std::vector<double> weights);
 
         /** @brief Use this method to initialize a GMM from random mean points and covariance matrices.
+         * DEPRECATED! The fitting procedure is very slow. It's better to initialize an empty GMM and then set the parameters with the setter methods.
          * @param[in] num_components number of clusters
          */  
         GaussianMixtureModel(int num_components);                                                                    // constructor: create GMM with random means and covariances    
+
+        /** @brief Use this method to initialize an empty GMM. Parameters must be set with the setter methods.
+         */  
+        GaussianMixtureModel();
         
         /** @brief Destructor
          */  
@@ -54,6 +59,8 @@ class GaussianMixtureModel
          */
         void fitgmm(Eigen::MatrixXd samples, int num_components, int max_iterations, double tolerance, bool verbose);                     // expectation maximization algorithm
 
+        void fitgmm2(Eigen::MatrixXd samples, int num_components, int max_iterations, double tolerance, bool verbose);                     // expectation maximization algorithm
+
         /** @brief Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step.
          * Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached.
          * The GMM must be already initialized.
@@ -66,24 +73,47 @@ class GaussianMixtureModel
         void fitgmm(std::vector<Eigen::VectorXd> samples, int num_components, int max_iterations, double tolerance, bool verbose);                     // expectation maximization algorithm
         
         /** @brief Mean getter
-         * @param[out] means vector of mean points, one for each cluster
+         * @return means vector of mean points, one for each cluster
         */  
         std::vector<Eigen::VectorXd> getMeans();
 
         /** @brief Covariances getter
-         * @param[out] covariances vector of covariance matrices, one for each cluster
+         * @return covariances vector of covariance matrices, one for each cluster
         */  
         std::vector<Eigen::MatrixXd> getCovariances();
 
         /** @brief Weights getter
-         * @param[out] weights vector of weights, one for each cluster
+         * @return weights vector of weights, one for each cluster
         */  
         std::vector<double> getWeights();
 
         /** @brief Log-likelihood getter
-         * @param[out] logLikelihood log-likelihood value of the data
+         * @return logLikelihood log-likelihood value of the data
         */  
         double getLogLikelihood();
+
+        /** @brief Mean points setter method.
+         * @param[in] means vector of mean points of each Gaussian component
+         */
+        void setMeans(std::vector<Eigen::VectorXd> means);
+
+        /** @brief Covariance matrices setter method.
+         * @param[in] covariances vector of covariance matrices of each Gaussian component
+         */
+        void setCovariances(std::vector<Eigen::MatrixXd> covariances);
+
+        /** @brief Weights setter method.
+         * @param[in] weights vector of weights of each Gaussian component
+         */
+        void setWeights(std::vector<double> weights);
+
+        /** @brief Check dimensions consistency of the GMM parameters. 
+         * @return true if dimensions are consistent, false otherwise
+         */
+        bool check();
+
+
+
 
         /** @brief Use this method to calculate the probability of a given 2D point from a Bivariate Gaussian Distribution (single component).
          * @param[in] q considered point coordinates

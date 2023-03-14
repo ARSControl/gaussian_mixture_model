@@ -34,6 +34,12 @@ GaussianMixtureModel::GaussianMixtureModel(Eigen::MatrixXd samples, int num_comp
     fitgmm(samples, num_components, 1000, 1e-3, false);
 }
 
+GaussianMixtureModel::GaussianMixtureModel()
+{
+    std::cout << "Gaussian Mixture Model constructor called. Creating empty GMM..." << std::endl;
+    log_likelihood_ = -1.0;
+}
+
 
 GaussianMixtureModel::GaussianMixtureModel(int num_components)
 {
@@ -97,6 +103,37 @@ std::vector<double> GaussianMixtureModel::getWeights()
 double GaussianMixtureModel::getLogLikelihood()
 {
     return log_likelihood_;
+}
+
+void GaussianMixtureModel::setMeans(std::vector<Eigen::VectorXd> means)
+{
+    mu_ = means;
+}
+
+void GaussianMixtureModel::setCovariances(std::vector<Eigen::MatrixXd> covariances)
+{
+    sigma_ = covariances;
+}
+
+void GaussianMixtureModel::setWeights(std::vector<double> weights)
+{
+    w_ = weights;
+}
+
+bool GaussianMixtureModel::check()
+{
+    if (mu_.size() != sigma_.size() || mu_.size() != w_.size() || mu_.size() != k_)
+    {
+        std::cout << "Error in GMM definition: element number mismatch" << std::endl;
+        return false;
+    } else if (mu_[0].size() != sigma_[0].rows() || mu_[0].size() != sigma_[0].cols())
+    {
+        std::cout << "Error in GMM definition: dimension mismatch" << std::endl;
+        return false;
+    } else
+    {
+        return true;
+    }
 }
 
 
@@ -227,16 +264,146 @@ void GaussianMixtureModel::fitgmm(Eigen::MatrixXd samples, int num_components, i
     }
 }
 
+void GaussianMixtureModel::fitgmm2(Eigen::MatrixXd samples, int num_components, int max_iterations = 1000, double tolerance = 1e-3, bool verbose = false)
+{
+    auto timerstart = std::chrono::high_resolution_clock::now();
+    if (verbose)
+    {
+        std::cout << "Fitting GMM to data..." << std::endl;
+    }
+
+    // Set GMM parameters
+    dim_ = samples.rows();
+    k_ = num_components;
+    int n_samples = samples.cols();
+
+    if (verbose)
+    {
+        std::cout << "Number of samples: " << n_samples << std::endl;
+        std::cout << "Number of components: " << k_ << std::endl;
+        std::cout << "Dimension of samples: " << dim_ << std::endl;
+    }
+
+    // Initialize new GMM parameters
+    Eigen::MatrixXd gamma(n_samples, k_);               // responsibilities
+    double log_likelihood_old = -1.0;
+    double log_likelihood_new = 0.0;
+    int it = 0;                                // iteration counter
+
+    while (it < max_iterations && abs(log_likelihood_new-log_likelihood_old) > tolerance)
+    {
+        log_likelihood_old = log_likelihood_new;
+
+        if (verbose) {std::cout << "Starting E-step..." << std::endl;}
+
+        // E-step: compute responsibilities
+        for (int i = 0; i < n_samples; i++)
+        {
+            double sum = 0.0;
+            for (int j = 0; j < k_; j++)
+            {
+                double prob = w_[j] * gauss_pdf_2d(samples.col(i), mu_[j], sigma_[j]);
+                sum += prob;
+                gamma(i,j) = prob;
+            }
+
+            gamma.row(i) /= sum;
+        }
+
+        if (verbose) {std::cout << "E-step completed. Starting M-step..." << std::endl;}
+
+        // M-step: update parameters
+        for (int j = 0; j < k_; j++)
+        {
+            double sum_gamma = gamma.col(j).sum();
+            Eigen::VectorXd weighted_sum = samples * gamma.col(j);
+            if (verbose)
+            {
+                std::cout << "Sum of gamma: " << sum_gamma << std::endl;
+                std::cout << "Weighted sum: " << weighted_sum.transpose() << std::endl;
+            }
+
+            w_[j] = sum_gamma / n_samples;
+            mu_[j] = weighted_sum / sum_gamma;
+
+
+            Eigen::VectorXd sum_x_squared = samples.cwiseAbs2() * gamma.col(j);      // vector 2x1
+            if (verbose)
+            {
+                std::cout << "Sum of x squared: " << sum_x_squared.transpose() << std::endl;
+            }
+
+            double sum_x1_x2 = samples.row(0).cwiseProduct(samples.row(1)) * gamma.col(j);  // scalar
+            if (verbose)
+            {
+                std::cout << "Sum of x1*x2: " << sum_x1_x2 << std::endl;
+            }
+
+            sigma_[j](0,0) = sum_x_squared(0) / sum_gamma - pow(mu_[j](0), 2);
+            sigma_[j](1,1) = sum_x_squared(1) / sum_gamma - pow(mu_[j](1), 2);
+            sigma_[j](0,1) = sum_x1_x2 / sum_gamma - mu_[j](0) * mu_[j](1);
+            sigma_[j](1,0) = sigma_[j](0,1);
+
+            // Eigen::MatrixXd diff = samples.colwise() - mu_[j];
+            // Eigen::VectorXd diff_0 = diff.row(0).array() * gamma.col(j).array();
+            // Eigen::VectorXd diff_1 = diff.row(1).array() * gamma.col(j).array();
+
+            // sigma_[j](0,0) = diff_0.matrix().transpose() * diff.row(0).matrix() / sum_gamma;
+            // sigma_[j](1,1) = diff_1.matrix().transpose() * diff.row(1).matrix() / sum_gamma;
+            // sigma_[j](0,1) = diff_0.matrix().transpose() * diff.row(1).matrix() / sum_gamma;
+            // sigma_[j](1,0) = sigma_[j](0,1);
+
+            // Eigen::MatrixXd diff = samples - mu_[j].replicate(1, n_samples);
+            // sigma_[j] = diff.array().rowwise() * gamma.col(j).transpose().array();
+            // sigma_[j] *= diff.array().rowwise() * gamma.col(j).transpose().array();
+            // sigma_[j] = sigma_[j].rowwise().sum() / sum_gamma;
+        }
+
+        if(verbose) {std::cout << "M-step completed. Computing log-likelihood..." << std::endl;}
+
+        // Compute log-likelihood of data
+        log_likelihood_new = 0.0;
+        for (int i = 0; i < n_samples; i++)
+        {
+            double sum = 0.0;
+            for (int j = 0; j < k_; j++)
+            {
+                sum += w_[j] * gauss_pdf_2d(samples.col(i).head(2), mu_[j], sigma_[j]);
+            }
+            log_likelihood_new += log(sum);
+        }
+
+        it++;
+
+        if (verbose)
+        {
+            std::cout << "Iteration: " << it << std::endl;
+            std::cout << "Actual Log likelihood: " << log_likelihood_new << std::endl;
+            std::cout << "Difference new vs old log-likelihood: " << log_likelihood_new - log_likelihood_old << std::endl;
+        }
+    }
+
+    log_likelihood_ = log_likelihood_new;
+    auto end = std::chrono::high_resolution_clock::now();
+
+    if (verbose)
+    {   
+        std::cout << "Total number of iterations: " << it << std::endl;
+        std::cout << "Log likelihood: " << log_likelihood_new << std::endl;
+        std::cout<<"Computation time for EM: -------------: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - timerstart).count()<<" ms :-------------\n";
+    }
+}
+
 
 void GaussianMixtureModel::fitgmm(std::vector<Eigen::VectorXd> samples, int num_components, int max_iterations = 1000, double tolerance = 1e-3, bool verbose = false)
 {
     // Rework samples to Eigen::MatrixXd
     int n_samples = samples.size();
     int dim = samples[0].size();
-    Eigen::MatrixXd samples_eigen(dim, n_samples);
+    Eigen::MatrixXd samples_eigen(2, n_samples);
     for (int i = 0; i < n_samples; i++)
     {
-        samples_eigen.col(i) = samples[i];
+        samples_eigen.col(i) = samples[i].head(2);
     }
 
     // Fit GMM
