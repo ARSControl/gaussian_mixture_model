@@ -24,12 +24,12 @@ include_directories(
 )
 
 # define a library target
-add_library(${PROJECT_NAME}
+add_library(gaussian_mixture_model
   src/gaussian_mixture_model.cpp
 )
 
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(gaussian_mixture_model ${catkin_LIBRARIES})
 
 add_executable(gmm_node src/gmm_node.cpp)
 add_dependencies(gmm_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
