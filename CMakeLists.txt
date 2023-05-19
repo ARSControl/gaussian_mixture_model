@@ -10,6 +10,7 @@ project(gaussian_mixture_model)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  gmm_msgs
 )
 
 catkin_package(
