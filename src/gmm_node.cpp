@@ -1,29 +1,62 @@
-#include <ros/ros.h>
-#include <tf2/utils.h>
+#include <iostream>
+#include <vector>
+#include <chrono>
 #include <random>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/impl/utils.h>
+#include <chrono>
+#include <functional>
+#include <memory>
+#include <string>
+#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/SVD>
+#include <cstdlib>
+#include <cmath>
+#include <algorithm>
+#include <netinet/in.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <time.h>
+#include <fstream>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <math.h>
+
+
+#include "rclcpp/rclcpp.hpp"
+#include "turtlebot3_msgs/msg/gaussian.hpp"
+#include "turtlebot3_msgs/msg/gmm.hpp"
 
 #include "gaussian_mixture_model/gaussian_mixture_model.h"
 
 
 
-class GMM_Test
+class GMM_Test : public rclcpp::Node
 {
 private:
-    ros::NodeHandle n;
-    ros::Timer timer;
     GaussianMixtureModel gmm;
     std::vector<Eigen::MatrixXd> covariances;
     std::vector<Eigen::VectorXd> mean_points;
     std::vector<double> weights;
     Eigen::MatrixXd samples;
 
+    // ROS Related Variables
+    rclcpp::TimerBase::SharedPtr timer_;
+    turtlebot3_msgs::msg::GMM gmm_msg;
+    rclcpp::Publisher<turtlebot3_msgs::msg::GMM>::SharedPtr gmm_pub_;
+
 public:
 
-    // initialize GMM with 5 random components
-    GMM_Test(): gmm(4)
+    // initialize GMM with 4 random components
+    GMM_Test(): Node("gmm_test"), gmm(4)
     {
         std::cout << "Constructor called" << std::endl;
-        timer = n.createTimer(ros::Duration(1.0), &GMM_Test::timerCallback,this);
+
+        // Initialize ROS variables
+        timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&GMM_Test::timerCallback, this));
+        gmm_pub_ = this->create_publisher<turtlebot3_msgs::msg::GMM>("/gaussian_mixture_model", 10);
 
         samples.resize(2,200);
         double dev = 0.5;
@@ -93,45 +126,62 @@ public:
 
         std::cout << "GMM Initialized" << std::endl;
 
+        std::cout << "Mean Points: " << std::endl;
+        for(int i = 0; i < mean_points.size(); i++)
+        {
+            std::cout << mean_points[i] << std::endl;
+        }
+
+        std::cout << "Covariances: " << std::endl;
+        for(int i = 0; i < covariances.size(); i++)
+        {
+            std::cout << covariances[i] << std::endl;
+        }
+
+        std::cout << "Weights: " << std::endl;
+        for(int i = 0; i < weights.size(); i++)
+        {
+            std::cout << weights[i] << std::endl;
+        }
+
+        // Create ROS msg
+        gmm_msg.weights = weights;
+
+        for(int i = 0; i < mean_points.size(); i++)
+        {
+            turtlebot3_msgs::msg::Gaussian gaussian;
+            gaussian.mean_point.x = mean_points[i](0);
+            gaussian.mean_point.y = mean_points[i](1);
+            gaussian.covariance.push_back(covariances[i](0,0));
+            gaussian.covariance.push_back(covariances[i](0,1));
+            gaussian.covariance.push_back(covariances[i](1,0));
+            gaussian.covariance.push_back(covariances[i](1,1));
+            gmm_msg.gaussians.push_back(gaussian);
+        }
+
+        std::cout << "ROS MSG Initialized" << std::endl;
+
     }
 
-    void timerCallback(const ros::TimerEvent&)
+    ~GMM_Test()
     {
-        auto timerstart = std::chrono::high_resolution_clock::now();
-        gmm.fitgmm(samples, 4, 1000, 1e-3, false);
-        auto end = std::chrono::high_resolution_clock::now();
-        std::cout<<"Computation time for EM: -------------: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - timerstart).count()<<" ms :-------------\n";
+        std::cout<<"DESTROYER HAS BEEN CALLED"<<std::endl;
+    }
 
-        std::cout << "Mean points: \n";
-        for (int i = 0; i < mean_points.size(); i++)
-        {
-            std::cout << mean_points[i].transpose() << std::endl;
-        } 
-
-        std::cout << "Covariance matrices:\n";
-        for (int i = 0; i < covariances.size(); i++)
-        {
-            std::cout << covariances[i].transpose() << std::endl;
-        }
-
-        std::cout << "Mixture proportion: ";
-        for (int i = 0; i < weights.size(); i++)
-        {
-            std::cout << weights[i];
-        }
-        std::cout << std::endl;
+    void timerCallback()
+    {        
+        gmm_pub_->publish(gmm_msg);
     }
 
     
 
 };//End of class SubscribeAndPublish
 
+
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "gmm_test_node");
-    GMM_Test gmm_node;
-
-    ros::spin();
-
+    rclcpp::init(argc, argv);
+    rclcpp::spin(std::make_shared<GMM_Test>());
+    rclcpp::shutdown();
     return 0;
 }
