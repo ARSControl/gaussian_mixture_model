@@ -61,17 +61,6 @@ class GaussianMixtureModel
 
         /** @brief Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step.
          * Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached.
-         * The GMM must be already initialized.
-         * @param[in] samples matrix of data samples. Each column is a sample.
-         * @param[in] num_components number of clusters
-         * @param[in] max_iterations maximum number of iterations (default: 1000)
-         * @param[in] tolerance convergence threshold (default: 1e-3)
-         * @param[in] verbose print number of iterations, final log_likelihood and time required for computation (default: false)
-         */
-        void fitgmm2(Eigen::MatrixXd samples, int num_components, int max_iterations, double tolerance, bool verbose);                     // expectation maximization algorithm
-
-        /** @brief Expectation-Maximization algorithm. Fits a GMM to a dataset recursively iterating between E-step and M-step.
-         * Iterations stop when the log likelihood of the data does not change more than a specified tolerance or when the maximum number of iterations is reached.
          * The GMM must be already initialized. Result is the same as above, but convergence should be faster.
          * @param[in] samples vector of samples. Each element of the std::vector contains coordinates of a sample.
          * @param[in] num_components number of clusters

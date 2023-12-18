@@ -153,120 +153,8 @@ double GaussianMixtureModel::gauss_pdf_2d(Eigen::VectorXd q, Eigen::VectorXd mea
 }
 
 
+
 void GaussianMixtureModel::fitgmm(Eigen::MatrixXd samples, int num_components, int max_iterations = 1000, double tolerance = 1e-3, bool verbose = false)
-{
-    auto timerstart = std::chrono::high_resolution_clock::now();
-    if (verbose)
-    {
-        std::cout << "Fitting GMM to data..." << std::endl;
-    }
-
-    // Set GMM parameters
-    dim_ = samples.rows();
-    k_ = num_components;
-    int n_samples = samples.cols();
-
-    if (verbose)
-    {
-        std::cout << "Number of samples: " << n_samples << std::endl;
-        std::cout << "Number of components: " << k_ << std::endl;
-        std::cout << "Dimension of samples: " << dim_ << std::endl;
-    }
-
-    // Initialize new GMM parameters
-    // std::vector<double> gamma(n_sampels * k_);               // responsibilities
-    std::vector<double> gamma(n_samples * k_);               // responsibilities
-    // double log_likelihood_old = -std::numeric_limits<double>::infinity();
-    double log_likelihood_old = -1.0;
-    double log_likelihood_new = 0.0;
-    int it = 0;                                // iteration counter
-
-    while (it < max_iterations && abs(log_likelihood_new-log_likelihood_old) > tolerance)
-    {
-        log_likelihood_old = log_likelihood_new;
-
-        // E-step: compute responsibilities
-        for (int i = 0; i < n_samples; i++)
-        {
-            double sum = 0.0;
-            for (int j = 0; j < k_; j++)
-            {
-                double prob = w_[j] * gauss_pdf_2d(samples.col(i).head(2), mu_[j], sigma_[j]);
-                sum += prob;
-                gamma[i * k_ + j] = prob;
-            }
-
-            for (int j = 0; j < k_; j++)
-            {
-                gamma[i * k_ + j] /= sum;
-            }
-
-            // gamma.row(i) /= sum;
-        }
-
-        // M-step: update parameters
-        for (int j = 0; j < k_; j++)
-        {
-            double sum_gamma = 0.0;
-            double sum_x1 = 0.0;
-            double sum_x2 = 0.0;
-            double sum_x1_squared = 0.0;
-            double sum_x2_squared = 0.0;
-            double sum_x1_x2 = 0.0;
-
-            for (int i = 0; i < n_samples; i++)
-            {
-                sum_gamma += gamma[i * k_ + j];
-                sum_x1 += gamma[i * k_ + j] * samples(0,i);
-                sum_x2 += gamma[i * k_ + j] * samples(1,i);
-                sum_x1_squared += gamma[i * k_ + j] * pow(samples(0,i), 2);
-                sum_x2_squared += gamma[i * k_ + j] * pow(samples(1,i), 2);
-                sum_x1_x2 += gamma[i * k_ + j] * samples(0,i) * samples(1,i);
-            }
-
-            w_[j] = sum_gamma / n_samples;
-            mu_[j](0) = sum_x1 / sum_gamma;
-            mu_[j](1) = sum_x2 / sum_gamma;
-            sigma_[j](0,0) = sum_x1_squared / sum_gamma - pow(mu_[j](0), 2);
-            sigma_[j](1,1) = sum_x2_squared / sum_gamma - pow(mu_[j](1), 2);
-            sigma_[j](0,1) = sum_x1_x2 / sum_gamma - mu_[j](0) * mu_[j](1);
-            sigma_[j](1,0) = sigma_[j](0,1);
-        }
-
-        // Compute log-likelihood of data
-        log_likelihood_new = 0.0;
-        for (int i = 0; i < n_samples; i++)
-        {
-            double sum = 0.0;
-            for (int j = 0; j < k_; j++)
-            {
-                sum += w_[j] * gauss_pdf_2d(samples.col(i).head(2), mu_[j], sigma_[j]);
-            }
-            log_likelihood_new += log(sum);
-        }
-
-        it++;
-
-        if (verbose)
-        {
-            std::cout << "Iteration: " << it << std::endl;
-            std::cout << "Actual Log likelihood: " << log_likelihood_new << std::endl;
-            std::cout << "Difference new vs old log-likelihood: " << log_likelihood_new - log_likelihood_old << std::endl;
-        }
-    }
-
-    log_likelihood_ = log_likelihood_new;
-    auto end = std::chrono::high_resolution_clock::now();
-
-    if (verbose)
-    {   
-        std::cout << "Total number of iterations: " << it << std::endl;
-        std::cout << "Log likelihood: " << log_likelihood_new << std::endl;
-        std::cout<<"Computation time for EM: -------------: "<<std::chrono::duration_cast<std::chrono::milliseconds>(end - timerstart).count()<<" ms :-------------\n";
-    }
-}
-
-void GaussianMixtureModel::fitgmm2(Eigen::MatrixXd samples, int num_components, int max_iterations = 1000, double tolerance = 1e-3, bool verbose = false)
 {
     auto timerstart = std::chrono::high_resolution_clock::now();
     if (verbose)
@@ -397,7 +285,7 @@ void GaussianMixtureModel::fitgmm(std::vector<Eigen::VectorXd> samples, int num_
     }
 
     // Fit GMM
-    fitgmm2(samples_eigen, num_components, max_iterations, tolerance, verbose);
+    fitgmm(samples_eigen, num_components, max_iterations, tolerance, verbose);
 }
 
 
