@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <vector>
 #include <chrono>
+#include <math.h>
 
 #include <gaussian_mixture_model/gaussian_mixture_model.h>
 
@@ -324,9 +325,11 @@ void GaussianMixtureModel::fitgmm2(Eigen::MatrixXd samples, int num_components, 
                 std::cout << "Weighted sum: " << weighted_sum.transpose() << std::endl;
             }
 
-            w_[j] = sum_gamma / n_samples;
-            mu_[j] = weighted_sum / sum_gamma;
-
+            if (!isnan(weighted_sum(0)) && !isnan(weighted_sum(1)) && !isnan(sum_gamma))
+            {
+                w_[j] = sum_gamma / n_samples;
+                mu_[j] = weighted_sum / sum_gamma;
+            }
 
             Eigen::VectorXd sum_x_squared = samples.cwiseAbs2() * gamma.col(j);      // vector 2x1
             if (verbose)
@@ -398,3 +401,29 @@ void GaussianMixtureModel::fitgmm(std::vector<Eigen::VectorXd> samples, int num_
 }
 
 
+
+std::vector<Eigen::VectorXd> GaussianMixtureModel::drawSamples(int num_samples)
+{
+    std::cout << "Drawing samples..." << std::endl;
+    std::default_random_engine gen;
+    // std::vector<double> weights;
+    std::vector<Eigen::VectorXd> resampled_particles;
+    std::vector<Eigen::VectorXd> init_particles;
+
+    // std::cout << "Weights: " << w_ << std::endl;
+
+    // for (int i = 0; i < w_.size(); i++)
+    // {
+    //     weights.push_back(w_(i));
+    //     // init_particles.push_back(particles_.col(i));
+    // }
+
+    std::discrete_distribution<int> distribution(w_.begin(), w_.end());
+
+    for (int i = 0; i < num_samples; i++)
+    {
+        resampled_particles.push_back(init_particles[distribution(gen)]);
+    }
+
+    return resampled_particles;
+}

@@ -121,6 +121,11 @@ class GaussianMixtureModel
          */
         bool check();
 
+        /** @brief Use this method to generate a desired number of samples from the current GMM.
+         * @param[in] num_samples number of samples to be generated
+         */
+        std::vector<Eigen::VectorXd> drawSamples(int num_samples);
+
 
 
 
